@@ -1,5 +1,8 @@
-# sish
-## a simple hell
+# sish - a simple hell
 
-# synopsis
-`sish [-x] [-c command]`
+### synopsis
+```bash
+sish [-x] [-c command]
+```
+
+
