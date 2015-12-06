@@ -1,1 +1,5 @@
-# sish - a simple (s)hell
+# sish
+## a simple hell
+
+# synopsis
+`sish [-x] [-c command]`
