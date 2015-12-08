@@ -4,4 +4,8 @@
 #include <unistd.h>
 
 
-void parse_arguments(int*, char**);
+int   tracing_enabled;
+char* arguments_command;
+
+void parse_arguments(int, char**);
+void set_default_arguments();

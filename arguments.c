@@ -1,17 +1,21 @@
 #include "arguments.h"
 
 
-void parse_arguments(int* argc, char** argv) {
+void parse_arguments(int argc, char** argv) {
 	char flag;
 	
-	/* Override getopt() error messages */
-	//opterr = 0;
+	set_default_arguments();
 
-	while ((flag = getopt(*argc, argv, "xc:")) >= 0) {
+	/* Override getopt() error messages */
+	opterr = 0;
+
+	while ((flag = getopt(argc, argv, ":xc:")) >= 0) {
 		switch (flag) {
 			case 'x':
+				tracing_enabled = 1;
 				break;
 			case 'c':
+				arguments_command = optarg;
 				break;
 			case ':':
 				fprintf(stderr,
@@ -29,8 +33,8 @@ void parse_arguments(int* argc, char** argv) {
 	}
 }
 
-/*
-void arguments_set_default() {
-	
+
+void set_default_arguments() {
+	tracing_enabled   = 0;
+	arguments_command = NULL;
 }
-*/
