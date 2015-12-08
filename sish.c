@@ -3,6 +3,7 @@
 #include <bsd/stdlib.h>
 
 #include "arguments.h"
+#include "tokenization.h"
 
 
 int main(int argc, char** argv) {
@@ -10,5 +11,9 @@ int main(int argc, char** argv) {
 	
 	parse_arguments(argc, argv);
 	
+	if (arguments_command != NULL) {
+		tokenize_operators(arguments_command);
+	}
+
 	return EXIT_SUCCESS;
 }
