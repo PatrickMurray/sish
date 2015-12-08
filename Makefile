@@ -1,24 +1,19 @@
-NAME        := sish
-TARBALL     := $(NAME).tar
+NAME    := sish
+TARBALL := $(NAME).tar
 
-SRC         := sish.c arguments.c tokenization.c
-HEADERS     :=        arguments.h tokenization.h
-FILES       := Makefile README.md $(SRC) $(HEADERS)
+SRC     := sish.c arguments.c tokenization.c
+HEADERS :=        arguments.h tokenization.h
+FILES   := Makefile README.md $(SRC) $(HEADERS)
 
-CFLAGS      := -Wall -Werror -g
-OBJ         := $(SRC:.c=.o)
-LINK_LINUX  := -lm -lbsd
-LINK_NETBSD := -lm
+CFLAGS  := -Wall -Werror -g
+OBJ     := $(SRC:.c=.o)
+LINKS   := -lm -lbsd
 
-RM          := rm -f
+RM      := rm -f
 
 
 all: $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(LINK_LINUX) $(CFLAGS)
-
-
-netbsd: $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(LINK_NETBSD) $(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINKS) $(CFLAGS)
 
 
 clean:
