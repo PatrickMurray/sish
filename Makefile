@@ -14,11 +14,11 @@ RM      := rm -f
 
 
 all: $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(LINK_LIN) $(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINK_LINUX) $(CFLAGS)
 
 
 netbsd: $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(LINK_BSD) $(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINK_NETBSD) $(CFLAGS)
 
 
 clean:
