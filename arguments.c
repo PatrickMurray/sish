@@ -4,8 +4,9 @@
 void parse_arguments(int argc, char** argv) {
 	char flag;
 	
-	set_default_arguments();
-
+	tracing_enabled   = 0;
+	arguments_command = NULL;
+	
 	/* Override getopt() error messages */
 	opterr = 0;
 
@@ -36,10 +37,4 @@ void parse_arguments(int argc, char** argv) {
 	printf("---------\n");
 	printf("tracing_enabled   = %i\n", tracing_enabled);
 	printf("arguments_command = %s\n", arguments_command);
-}
-
-
-void set_default_arguments() {
-	tracing_enabled   = 0;
-	arguments_command = NULL;
 }
