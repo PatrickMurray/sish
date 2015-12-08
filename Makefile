@@ -1,16 +1,16 @@
-NAME    := sish
-TARBALL := $(NAME).tar
+NAME        := sish
+TARBALL     := $(NAME).tar
 
-SRC     := sish.c arguments.c
-HEADERS :=        arguments.h
-FILES   := Makefile README.md $(SRC) $(HEADERS)
+SRC         := sish.c arguments.c tokenization.c
+HEADERS     :=        arguments.h tokenization.h
+FILES       := Makefile README.md $(SRC) $(HEADERS)
 
 CFLAGS      := -Wall -Werror -g
 OBJ         := $(SRC:.c=.o)
 LINK_LINUX  := -lm -lbsd
 LINK_NETBSD := -lm
 
-RM      := rm -f
+RM          := rm -f
 
 
 all: $(OBJ)
