@@ -1,8 +1,8 @@
 NAME    := sish
 TARBALL := $(NAME).tar
 
-SRC     := sish.c arguments.c tokenization.c
-HEADERS :=        arguments.h tokenization.h
+SRC     := sish.c arguments.c shell.c command.c tokenization.c
+HEADERS :=        arguments.h shell.h command.h tokenization.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
 CFLAGS  := -Wall -Werror -g

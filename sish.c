@@ -4,6 +4,8 @@
 
 #include "arguments.h"
 #include "tokenization.h"
+#include "shell.h"
+#include "command.h"
 
 
 int main(int argc, char** argv) {
@@ -11,8 +13,10 @@ int main(int argc, char** argv) {
 	
 	parse_arguments(argc, argv);
 	
-	if (arguments_command != NULL) {
-		tokenize_operators(arguments_command);
+	if (arguments_command == NULL) {
+		shell_start();
+	} else {
+		command_execute(arguments_command);
 	}
 
 	return EXIT_SUCCESS;
