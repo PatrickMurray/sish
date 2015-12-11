@@ -32,9 +32,4 @@ void parse_arguments(int argc, char** argv) {
 				exit(EXIT_FAILURE);
 		}
 	}
-
-	printf("DEBUGGING\n");
-	printf("---------\n");
-	printf("tracing_enabled   = %i\n", tracing_enabled);
-	printf("arguments_command = %s\n", arguments_command);
 }
