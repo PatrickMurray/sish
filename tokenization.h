@@ -3,5 +3,5 @@
 #include <bsd/stdlib.h>
 
 
-char*  tokenize_operators(char*);
-char** tokenize_string(char*);
+char** tokenize(char*);
+int    valid_token_sequence(char**);
