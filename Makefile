@@ -1,20 +1,16 @@
 NAME    := sish
 TARBALL := $(NAME).tar
 
-SRC     := sish.c arguments.c shell.c command.c tokenization.c
-HEADERS :=        arguments.h shell.h command.h tokenization.h
+SRC     := sish.c
+HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
 CFLAGS  := -Wall -Werror -g
 OBJ     := $(SRC:.c=.o)
-LINKS   := -lm -lbsd
-
-RM      := rm -f
-
+LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(LINKS) $(CFLAGS)
-
 
 clean:
 	-$(RM) *~
@@ -27,7 +23,6 @@ fclean:	clean
 
 
 re: fclean all
-
 
 package: fclean
 	tar cvzf $(TARBALL) $(FILES)
