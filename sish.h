@@ -10,6 +10,8 @@
 #include <readline/history.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <errno.h>
+#include <string.h>
 
 #define maxargs 15
 #define MAXCOMMANDS 512

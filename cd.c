@@ -15,10 +15,10 @@ void cd(char **args)
 		}
 		dir = user->pw_dir;
 	}
-	
-	if(chdir(dir) < 0)
+
+	if(chdir(dir) == -1)
 	{
-		fprintf(stderr,"cd: %s: No such file or directory\n", dir);
+		fprintf(stderr, "cd  %s: %s\n", dir, strerror(errno));
 		//args[1]=NULL;
 	}
 }
