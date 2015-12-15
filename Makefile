@@ -10,6 +10,7 @@ OBJ     := $(SRC:.c=.o)
 LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
+	lex parser.c
 	$(CC) $(OBJ) -o $(NAME) $(LINKS) #$(CFLAGS)
 
 clean:
