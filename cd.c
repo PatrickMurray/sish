@@ -4,7 +4,8 @@ void cd(char **args)
 {
 	char* dir;
 	struct passwd *user;
-
+	int i;
+	
 	dir = args[1];
 	if(dir == NULL)
 	{
@@ -19,6 +20,7 @@ void cd(char **args)
 	if(chdir(dir) == -1)
 	{
 		fprintf(stderr, "cd  %s: %s\n", dir, strerror(errno));
-		//args[1]=NULL;
 	}
+	
+	dir = NULL;
 }
