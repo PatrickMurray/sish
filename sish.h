@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 #define maxargs 15
 #define MAXCOMMANDS 512
@@ -20,5 +22,6 @@ char* arguments_command;
 void eval(char **);
 char** parse(char*);
 void cd(char**);
+void echo(char**);
 
 #endif

@@ -1,7 +1,7 @@
 NAME    := sish
 TARBALL := $(NAME).tar
 
-SRC     := sish.c lex.yy.c eval.c cd.c
+SRC     := sish.c lex.yy.c eval.c cd.c echo.c
 HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
@@ -10,7 +10,7 @@ OBJ     := $(SRC:.c=.o)
 LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
-	lex parser.c
+	#$(shell lex parser.c)
 	$(CC) $(OBJ) -o $(NAME) $(LINKS) #$(CFLAGS)
 
 clean:
@@ -18,6 +18,7 @@ clean:
 	-$(RM) \#*
 	-$(RM) *.o
 	-$(RM) *.core
+	#-$(RM) lex.yy.c
 
 fclean:	clean
 	-$(RM) $(NAME)

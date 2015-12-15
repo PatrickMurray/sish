@@ -2,21 +2,23 @@
 
 void cd(char **args)
 {
-	struct passwd *home_dir = NULL;
-	if(args[1] == NULL)
+	char* dir;
+	struct passwd *user;
+
+	dir = args[1];
+	if(dir == NULL)
 	{
-		if((home_dir=getpwuid(getuid())) == NULL)
+		if((user = getpwuid(getuid())) == NULL)
 		{
 			perror("getpwuid() failed.");
 			return;
 		}
+		dir = user->pw_dir;
 	}
-	else
+	
+	if(chdir(dir) < 0)
 	{
-		if(chdir(args[1]) < 0)
-		{
-			fprintf(stderr,"cd: %s: No such file or directory\n", args[1]);
-			args[1]=NULL;
-		}
+		fprintf(stderr,"cd: %s: No such file or directory\n", dir);
+		//args[1]=NULL;
 	}
 }
