@@ -26,6 +26,8 @@ void echo(char** arguments)
 		if (arguments[i+1] != NULL) {
 			printf(" ");
 		}
+
+		arguments[i] = NULL;
 	}
 	printf("\n");
 }
