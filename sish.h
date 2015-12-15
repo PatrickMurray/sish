@@ -9,7 +9,16 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#define maxargs 15
+#define MAXCOMMANDS 512
+
+char* _args[maxargs];
+
 int tracing_enabled;
 char* arguments_command;
+
+void eval(char **);
+char** parse(char*);
+void cd(char**);
 
 #endif

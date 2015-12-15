@@ -15,6 +15,7 @@ int main(int argc, char** argv)
 {
 	char flag;	
 	char* input;
+	char** arglist;
 	char shell_prompt[11]="sish_1.0$ ";
 
 	setprogname(argv[0]);
@@ -52,14 +53,22 @@ int main(int argc, char** argv)
 			exit(EXIT_FAILURE);
 		}
 		while(1)
-		{
+		{ 
 			input = readline(shell_prompt);
 			if(!input)
 			{
 				break;
 			}
-			
-		}
+			if((strcmp(input, "") == 0))
+			{
+				continue;
+			}
+			arglist=(char**)parse(input);
+			if(arglist != NULL)
+			{
+				eval(arglist);
+			}
+		} 
 	}
 	else 
 	{

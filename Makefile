@@ -1,16 +1,16 @@
 NAME    := sish
 TARBALL := $(NAME).tar
 
-SRC     := sish.c
+SRC     := sish.c lex.yy.c eval.c cd.c
 HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
-CFLAGS  := -Wall -Werror -g
+#CFLAGS  := -Wall -Werror -g
 OBJ     := $(SRC:.c=.o)
 LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(LINKS) $(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINKS) #$(CFLAGS)
 
 clean:
 	-$(RM) *~
