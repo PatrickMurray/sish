@@ -84,6 +84,10 @@ void eval(char **args)
 	{
 		cd(new_args);
 	}
+	else if (strcmp(currentcom, "echo") == 0)
+	{
+		echo(new_args);
+	}
 	else
 	{
 		printf("%s\n","TODO COMMAND");
