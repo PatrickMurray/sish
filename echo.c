@@ -8,7 +8,7 @@ void echo(char** arguments)
 	/* Replace $? and $$ */
 	for (i = 1; arguments[i] != NULL; i++) {
 		printf("<%s>\n", arguments[i]);
-		if (strcmp(arguments[i], "$?") == 0)
+/*		if (strcmp(arguments[i], "$?") == 0)
 		{
 			printf("Exit Status");
 			//printf("%i", );
@@ -26,6 +26,6 @@ void echo(char** arguments)
 		if (arguments[i+1] != NULL) {
 			printf(" ");
 		}
+*/
 	}
-	printf("\n");
 }

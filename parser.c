@@ -24,7 +24,7 @@ char* inputtext;
 extern int readInputForLexer(char* buffer,int *numBytesRead,int maxBytesToRead);
 %}
 
-WORDS	[a-zA-Z0-9\/\.\-\=]+
+WORDS	[a-zA-Z0-9\/\.\-\=\^$\\?]+
 OPS		[><|&]|>>
 
 %%
