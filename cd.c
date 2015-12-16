@@ -24,7 +24,7 @@ void cd(char** args)
 		if((user = getpwuid(getuid())) == NULL)
 		{
 			fprintf(stderr, "cd: getpwuid() error: %s\n",
-				getprogname(), strerror(errno)
+				strerror(errno)
 			);
 			error = 1;
 		}
