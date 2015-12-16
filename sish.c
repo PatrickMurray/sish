@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	
 
 	exit_status = 0;
-	process_id = 0;
+	process_id = getpid();
 	
 
 	setprogname(argv[0]);
