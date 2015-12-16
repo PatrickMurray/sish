@@ -25,6 +25,8 @@ int main(int argc, char** argv)
 	
 	shell_prompt = "sish_1.0$ ";
 	
+	exit_status = 0;
+	process_id = 0;
 
 	setprogname(argv[0]);
 	

@@ -3,9 +3,10 @@
 void command(char** command, char* in, char* out, char bg, char* mode)
 {
 	int   i;
-	int   status;
 	pid_t pid;
 	pid_t reap_pid;
+	
+	exit_status = 0;
 
 	if (tracing_enabled)
 	{
@@ -21,13 +22,15 @@ void command(char** command, char* in, char* out, char bg, char* mode)
 		printf("\n");
 	}
 	
-	if((pid = fork()) > 0)
+	if((pid = process_id = fork()) > 0)
 	{
 		if(!bg)
 		{
+			printf("[%i]", process_id);
+
 			do
 			{
-				reap_pid = wait(&status);
+				reap_pid = wait(&exit_status);
 				if(reap_pid != pid)
 				{
 					printf("%d: background process terminated\n", reap_pid);

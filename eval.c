@@ -9,13 +9,14 @@ void eval(char** args)
 	char*  outputfile;
 	char   background;
 	char*  mode;
+	char*  buffer[BUFFER_SIZE];
 	
 	tmp        = new_args;
 	inputfile  = NULL;
 	outputfile = NULL;
 	background = 0;
 	mode       = "w";
-
+	
 	if (*args == NULL)
 	{
 		return;
@@ -23,6 +24,19 @@ void eval(char** args)
 
 	while (*args != NULL)
 	{
+		if (strcmp(*args, "$$") == 0)
+		{
+			/* Replace the process id */
+			bzero(buffer, BUFFER_SIZE);
+			sprintf(*args, "%i", process_id);
+		}
+		else if (strcmp(*args, "$?") == 0)
+		{
+			/* Replace the exit status */
+			bzero(buffer, BUFFER_SIZE);
+			sprintf(*args, "%i", exit_status);
+		}
+		
 		if (strcmp(*args, "<") == 0)
 		{
 			args++;
