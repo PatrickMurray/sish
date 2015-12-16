@@ -15,13 +15,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define maxargs 15
+#define maxargs     15
 #define MAXCOMMANDS 512
+#define BUFFER_SIZE 65536
 
 char* _args[maxargs];
 
 int tracing_enabled;
 char* arguments_command;
+
+int exit_status;
+int process_id;
 
 void eval(char **);
 char** parse(char*);
