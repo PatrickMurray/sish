@@ -9,7 +9,7 @@ void eval(char **args)
 	char *inputfile=NULL;
 	char *outputfile=NULL;
 	char background=0;
-	char append=0;
+	char *mode="w";
 
 	if(*args == NULL)
 	{
@@ -50,7 +50,7 @@ void eval(char **args)
 			args++;
 			if(*args)
 			{
-				append=1;
+				mode="a";
 				outputfile=*args;
 			}
 			else
@@ -74,7 +74,7 @@ void eval(char **args)
 		}
 		args++;
 	}
-	tmp=NULL;
+	*tmp=NULL;
 	currentcom=new_args[0];
 	if(strcmp(currentcom,"exit") == 0)
 	{
@@ -90,6 +90,6 @@ void eval(char **args)
 	}
 	else
 	{
-		printf("%s\n","TODO COMMAND");
+		command(new_args,inputfile,outputfile,background,mode);
 	}
 }

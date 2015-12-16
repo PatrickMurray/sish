@@ -1,7 +1,7 @@
 NAME    := sish
 TARBALL := $(NAME).tar
 
-SRC     := sish.c lex.yy.c eval.c cd.c echo.c
+SRC     := sish.c lex.yy.c eval.c cd.c echo.c command.c
 HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
