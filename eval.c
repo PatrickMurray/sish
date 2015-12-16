@@ -11,12 +11,13 @@ void eval(char** args)
 	char*  mode;
 	char*  buffer[BUFFER_SIZE];
 	
-	tmp        = new_args;
-	inputfile  = NULL;
-	outputfile = NULL;
-	background = 0;
-	mode       = "w";
-	
+	tmp          = new_args;
+	inputfile    = NULL;
+	outputfile   = NULL;
+	background   = 0;
+	mode         = "w";
+	num_commands = 1;
+
 	if (*args == NULL)
 	{
 		return;
@@ -24,6 +25,11 @@ void eval(char** args)
 
 	while (*args != NULL)
 	{
+		if (strcmp(*args, "|") == 0)
+		{
+			num_commands++;
+		}
+		
 		if (strcmp(*args, "$$") == 0)
 		{
 			/* Replace the process id */

@@ -28,6 +28,8 @@ char* arguments_command;
 int exit_status;
 int process_id;
 
+int num_commands;
+
 void eval(char **);
 char** parse(char*);
 void cd(char**);
