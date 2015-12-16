@@ -5,13 +5,13 @@ SRC     := sish.c lex.yy.c eval.c cd.c echo.c command.c
 HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
-#CFLAGS  := -Wall -Werror -g
+CFLAGS  := -Wall -Werror -g
 OBJ     := $(SRC:.c=.o)
 LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
 	#$(shell lex parser.c)
-	$(CC) $(OBJ) -o $(NAME) $(LINKS) #$(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINKS) $(CFLAGS)
 
 clean:
 	-$(RM) *~
