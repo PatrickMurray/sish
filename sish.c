@@ -22,14 +22,32 @@ int main(int argc, char** argv)
 	char*  input;
 	char** arglist;
 	char*  shell_prompt;
+	char*  exec_path;
+	char   buffer[PATH_MAX + 1];
 	
 	shell_prompt = "sish_1.0$ ";
 	
+
 	exit_status = 0;
 	process_id = 0;
+	
 
 	setprogname(argv[0]);
 	
+	if ((exec_path = realpath(argv[0], buffer)) == NULL) {
+		fprintf(stderr, "%s: unable to resolve path: %s\n",
+			getprogname(), strerror(errno)
+		);
+		exit(EXIT_FAILURE);
+	}
+
+	if (setenv("SHELL", exec_path, 1) == -1) {
+		fprintf(stderr, "%s: unable to set SHELL: %s\n", getprogname(),
+			strerror(errno)
+		);
+		exit(EXIT_FAILURE);
+	}
+
 	/* Override getopt() error messages */
 	opterr = 0;
 	while ((flag = getopt(argc, argv, ":xc:")) >= 0) 

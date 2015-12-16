@@ -57,8 +57,8 @@ void command(char** command, char* in, char* out, char bg, char* mode)
 		
 		if (execvp(command[0], command) == -1)
 		{
-			fprintf(stderr, "%s: %s\n", command[0],
-				strerror(errno)
+			fprintf(stderr, "-%s: %s: %s\n", getprogname(),
+				command[0], strerror(errno)
 			);
 			exit(EXIT_FAILURE);
 		}
