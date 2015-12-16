@@ -1,7 +1,7 @@
-#include "sish.h"
-
+#include "sish.h" 
 void eval(char** args)
 {
+	int i;
 	char*  new_args[MAXCOMMANDS];
 	char** tmp;
 	char*  currentcom;
@@ -17,19 +17,25 @@ void eval(char** args)
 	background   = 0;
 	mode         = "w";
 	num_commands = 1;
+	i=0;
 
 	if (*args == NULL)
 	{
 		return;
 	}
-
-	while (*args != NULL)
+	while(args[i] !=NULL)
 	{
-		if (strcmp(*args, "|") == 0)
+		if(strcmp(args[i], "|") == 0)
 		{
 			num_commands++;
 		}
-		
+		i++;
+	}
+	printf("%d\n",num_commands);
+
+	while (*args != NULL)
+	{
+				
 		if (strcmp(*args, "$$") == 0)
 		{
 			/* Replace the process id */
