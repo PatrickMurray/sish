@@ -26,8 +26,6 @@ void command(char** command, char* in, char* out, char bg, char* mode)
 	{
 		if(!bg)
 		{
-			printf("[%i]", process_id);
-
 			do
 			{
 				reap_pid = wait(&exit_status);
@@ -56,7 +54,14 @@ void command(char** command, char* in, char* out, char bg, char* mode)
 				fprintf(stderr, "Error opening input stream\n"); 
 			}
 		}
-		execvp(command[0], command);
+		
+		if (execvp(command[0], command) == -1)
+		{
+			fprintf(stderr, "%s: %s\n", command[0],
+				strerror(errno)
+			);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
