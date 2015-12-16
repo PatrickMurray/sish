@@ -1,25 +1,33 @@
 #include "sish.h"
+
+
 void sigintHandler(int sig_num)
 {
 	printf("\n");
 	fflush(stdout);
+	
 	if(signal(SIGINT, sigintHandler) == SIG_ERR)
 	{
 		perror("sish: signal() failed.");
 		exit(EXIT_FAILURE);
 	}
+	
 	printf("sish_1.0$ ");
 }
- 
+
+
 int main(int argc, char** argv) 
 {
-	char flag;	
-	char* input;
+	char   flag;	
+	char*  input;
 	char** arglist;
-	char shell_prompt[11]="sish_1.0$ ";
+	char*  shell_prompt;
+	
+	shell_prompt = "sish_1.0$ ";
+	
 
 	setprogname(argv[0]);
-
+	
 	/* Override getopt() error messages */
 	opterr = 0;
 	while ((flag = getopt(argc, argv, ":xc:")) >= 0) 
@@ -45,6 +53,7 @@ int main(int argc, char** argv)
 				exit(EXIT_FAILURE);
 		}
 	}
+	
 	if(arguments_command == NULL)
 	{
 		if(signal(SIGINT, sigintHandler) == SIG_ERR)
@@ -52,6 +61,7 @@ int main(int argc, char** argv)
 			perror("sish: signal() failed.");
 			exit(EXIT_FAILURE);
 		}
+
 		while(1)
 		{ 
 			input = readline(shell_prompt);
@@ -74,5 +84,6 @@ int main(int argc, char** argv)
 	{
 		/* command_execute(arguments_command); */
 	}
-	return 0;
+
+	return EXIT_SUCCESS;
 }

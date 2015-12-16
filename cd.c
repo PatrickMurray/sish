@@ -1,26 +1,53 @@
 #include "sish.h"
 
-void cd(char **args)
+
+/*	
+ *	An implementation of the cd builtin command.
+ *	
+ *	@param		char**		arguments
+ *	
+ *	@return		void
+ */
+void cd(char** args)
 {
-	char* dir;
+	char* directory;
+	int error;
 	struct passwd *user;
 	int i;
 	
-	dir = args[1];
-	if(dir == NULL)
+	directory = args[1];
+	error = 0;
+
+	if(directory == NULL)
 	{
+		/* If the user provides no directory, look up their home. */
 		if((user = getpwuid(getuid())) == NULL)
 		{
-			perror("getpwuid() failed.");
-			return;
+			fprintf(stderr, "cd: getpwuid() error: %s\n",
+				getprogname(), strerror(errno)
+			);
+			error = 1;
 		}
-		dir = user->pw_dir;
-	}
 
-	if(chdir(dir) == -1)
-	{
-		fprintf(stderr, "cd  %s: %s\n", dir, strerror(errno));
+		if (!error)
+		{
+			directory = user->pw_dir;
+		}
 	}
 	
-	dir = NULL;
+	if (!error)
+	{
+		if(chdir(directory) == -1)
+		{
+			fprintf(stderr, "cd %s: %s\n", directory,
+				strerror(errno)
+			);
+		}
+	}
+	
+	/* Clear up the arguments. */
+	for (i = 0; args[i] != NULL; i++)
+	{
+		args[i] = NULL;
+	}
 }

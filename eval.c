@@ -1,42 +1,49 @@
 #include "sish.h"
 
-void eval(char **args)
+void eval(char** args)
 {
-	char *new_args[MAXCOMMANDS];
-	char **tmp=new_args;
+	char*  new_args[MAXCOMMANDS];
+	char** tmp;
+	char*  currentcom;
+	char*  inputfile;
+	char*  outputfile;
+	char   background;
+	char*  mode;
+	
+	tmp        = new_args;
+	inputfile  = NULL;
+	outputfile = NULL;
+	background = 0;
+	mode       = "w";
 
-	char *currentcom;
-	char *inputfile=NULL;
-	char *outputfile=NULL;
-	char background=0;
-	char *mode="w";
-
-	if(*args == NULL)
+	if (*args == NULL)
 	{
 		return;
 	}
-	while(*args !=NULL)
+
+	while (*args != NULL)
 	{
-		if(strcmp(*args,"<")==0)
+		if (strcmp(*args, "<") == 0)
 		{
 			args++;
-			if(*args)
-			{
-				inputfile=*args;
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
-				return;
 
+			if (*args)
+			{
+				inputfile = *args;
+			}
+			else
+			{
+				fprintf(stderr, "Missing name for redirect.\n");
+				return;
 			}
 		}
-		else if(strcmp(*args,">")==0)
+		else if (strcmp(*args, ">") == 0)
 		{
 			args++;
-			if(*args)
+
+			if (*args)
 			{
-				outputfile=*args;
+				outputfile = *args;
 			}
 			else
 			{
@@ -45,13 +52,14 @@ void eval(char **args)
 			}
 
 		}
-		else if(strcmp(*args, ">>")==0)
+		else if (strcmp(*args, ">>") == 0)
 		{
 			args++;
-			if(*args)
+
+			if (*args)
 			{
-				mode="a";
-				outputfile=*args;
+				mode = "a";
+				outputfile = *args;
 			}
 			else
 			{
@@ -59,28 +67,31 @@ void eval(char **args)
 				return;
 			}
 		}
-		else if(strcmp(*args,"&")==0)
+		else if (strcmp(*args, "&") == 0)
 		{
-			background=1;
+			background = 1;
 		}
-		else if(strcmp(*args,"|")==0)
+		else if (strcmp(*args,"|") == 0)
 		{
 			printf("%s\n","TODO PIPELINE");
 		}
 		else
 		{
-			*tmp=(*args);
+			*tmp = (*args);
 			tmp++;
 		}
+
 		args++;
 	}
-	*tmp=NULL;
-	currentcom=new_args[0];
-	if(strcmp(currentcom,"exit") == 0)
+
+	*tmp = NULL;
+	currentcom = new_args[0];
+	
+	if (strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
 	}
-	else if(strcmp(currentcom,"cd") == 0)
+	else if (strcmp(currentcom, "cd") == 0)
 	{
 		cd(new_args);
 	}
@@ -90,6 +101,6 @@ void eval(char **args)
 	}
 	else
 	{
-		command(new_args,inputfile,outputfile,background,mode);
+		command(new_args, inputfile, outputfile, background, mode);
 	}
 }

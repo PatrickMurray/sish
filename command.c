@@ -2,11 +2,11 @@
 
 void command(char** command, char* in, char* out, char bg, char* mode)
 {
-	int status;
+	int   status;
 	pid_t pid;
 	pid_t reap_pid;
 	
-	if((pid=fork()) >0)
+	if((pid = fork()) > 0)
 	{
 		if(!bg)
 		{
@@ -22,23 +22,23 @@ void command(char** command, char* in, char* out, char bg, char* mode)
 			while(reap_pid !=pid);
 		}
 	}
-	else if(pid ==0) /*CHILD*/
+	else if(pid == 0) /* CHILD */
 	{
-		if(in!=NULL)
+		if(in != NULL)
 		{
 			if(freopen(in, "r", stdin) == NULL)
 			{  
 				fprintf(stderr, "Error opening input stream\n"); 
 			}
 		}
-		if(out!=NULL)
+		if(out != NULL)
 		{
-			if(freopen(out,mode, stdout) == NULL)
+			if(freopen(out, mode, stdout) == NULL)
 			{  
 				fprintf(stderr, "Error opening input stream\n"); 
 			}
 		}
-		execvp(command[0],command);
+		execvp(command[0], command);
 	}
 	else
 	{
