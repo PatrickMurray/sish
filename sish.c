@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 			{
 				break;
 			}
-			if((strcmp(input, "") == 0))
+			if((strlen(input) == 0))
 			{
 				continue;
 			}
@@ -82,7 +82,11 @@ int main(int argc, char** argv)
 	}
 	else 
 	{
-		/* command_execute(arguments_command); */
+		arglist = parse(arguments_command);
+		if (arglist != NULL)
+		{
+			eval(arglist);
+		}
 	}
 
 	return EXIT_SUCCESS;

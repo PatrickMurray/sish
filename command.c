@@ -2,9 +2,24 @@
 
 void command(char** command, char* in, char* out, char bg, char* mode)
 {
+	int   i;
 	int   status;
 	pid_t pid;
 	pid_t reap_pid;
+
+	if (tracing_enabled)
+	{
+		printf("+ ");
+		for (i = 0; command[i]; i++) {
+			printf("%s", command[i]);
+
+			if (command[i+1] != NULL)
+			{
+				printf(" ");
+			}
+		}
+		printf("\n");
+	}
 	
 	if((pid = fork()) > 0)
 	{
