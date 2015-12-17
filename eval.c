@@ -10,7 +10,6 @@ void eval(char** args, int pipes)
 	char*  outputfile;
 	char   background;
 	char*  mode;
-	char*  buffer[BUFFER_SIZE];
 	int	command_start[10];
 
 	
@@ -28,18 +27,15 @@ void eval(char** args, int pipes)
 	}
 	while (args[i] != NULL)
 	{
-				
 		if(strcmp(args[i], "$$") == 0)
 		{
 			/* Replace the process id */
-			bzero(buffer, BUFFER_SIZE);
-			sprintf(*args, "%i", process_id);
+			sprintf(args[i], "%i", process_id);
 		}
 		else if (strcmp(args[i], "$?") == 0)
 		{
 			/* Replace the exit status */
-			bzero(buffer, BUFFER_SIZE);
-			sprintf(*args, "%i", exit_status);
+			sprintf(args[i], "%i", exit_status);
 		}
 		if(strcmp(args[i], "<") == 0)
 		{
@@ -98,8 +94,9 @@ void eval(char** args, int pipes)
 			*tmp = args[i];
 			tmp++;
 		}
-		i++;
+		++i;
 	}
+	*tmp=NULL;
 	currentcom = new_args[0];
 	if(strcmp(currentcom,"exit") == 0)
 	{
@@ -117,4 +114,5 @@ void eval(char** args, int pipes)
 	{
 		command(args,num_commands,command_start,inputfile,outputfile,background,mode);
 	}
+
 }
