@@ -25,10 +25,33 @@ void eval(char** args, int pipes)
 	{
 		return;
 	}
+	
+	if (tracing_enabled)
+	{
+		fprintf(stderr, "+ ");
+	}
 
 	idx = 0;
 	while (args[idx] != NULL)
 	{
+		if (tracing_enabled)
+		{
+			if (strcmp(args[idx], "|") == 0)
+			{
+				fprintf(stderr, "\n+ ");
+			}
+			else
+			{
+				fprintf(stderr, "%s", args[idx]);
+				if (args[idx + 1] != NULL &&
+				    strcmp(args[idx + 1], "|"))
+				{
+					fprintf(stderr, " ");
+				}
+			}
+		}
+		
+
 		if(strcmp(args[idx], "$$") == 0)
 		{
 			/* Replace the process id */
@@ -98,6 +121,11 @@ void eval(char** args, int pipes)
 		}
 
 		idx++;
+	}
+	
+	if (tracing_enabled)
+	{
+		fprintf(stderr, "\n");
 	}
 
 	*tmp=NULL;
