@@ -9,21 +9,28 @@
  *	@return		void
  *	
  */
-void echo(char** arguments)
+void echo(char** argv)
 {
 	int i;
 	
-	for (i = 1; arguments[i] != NULL; i++) {
-		/* Print each argument */
-		printf("%s", arguments[i]);
-		
-		/* Clear them */
-		arguments[i] = NULL;
-		
-		/* If the next argument isn't null append a space to the end.*/
-		if (arguments[i+1] != NULL) {
+	/* Iterate through argv, printing arguments and then clearing them for
+	 * the next command.
+	 */
+	for (i = 1;
+	     argv[i] != NULL;
+	     i++)
+	{
+		printf("%s", argv[i]);
+
+		/* If there is an argument following the current argument, we
+		 * want to add a space between them.
+		 */
+		if (arguments[i + 1] != NULL) {
 			printf(" ");
 		}
+
+		/* Reset argv as we iterate through */
+		argv[i] = NULL;
 	}
 	
 	printf("\n");
