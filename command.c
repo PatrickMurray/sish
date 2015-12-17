@@ -1,72 +1,76 @@
 #include "sish.h"
 
-void command(char** command, char* in, char* out, char bg, char* mode)
+void command(char** args,int commands,int start[], char* in, char* out, char bg, char* mode)
 {
-	int   i;
-	pid_t pid;
-	pid_t reap_pid;
-	
+	int i=0;
+	int pid;
+	int status;
+	int place;
+	int j=0;
+	int k=0;
+	int q=0;
+
+	int pipes=commands-1;
+	int pipefds[2*pipes];
+	start[0]=0;
+
 	exit_status = 0;
 
-	if (tracing_enabled)
+	for(i=0;i<pipes;i++)
 	{
-		printf("+ ");
-		for (i = 0; command[i]; i++) {
-			printf("%s", command[i]);
-
-			if (command[i+1] != NULL)
-			{
-				printf(" ");
-			}
-		}
-		printf("\n");
-	}
-	
-	if((pid = process_id = fork()) > 0)
-	{
-		if(!bg)
+		if(pipe(pipefds+i*2) < 0)
 		{
-			do
-			{
-				reap_pid = wait(&exit_status);
-				if(reap_pid != pid)
-				{
-					printf("%d: background process terminated\n", reap_pid);
-				}
-
-			}
-			while(reap_pid !=pid);
-		}
-	}
-	else if(pid == 0) /* CHILD */
-	{
-		if(in != NULL)
-		{
-			if(freopen(in, "r", stdin) == NULL)
-			{  
-				fprintf(stderr, "Error opening input stream\n"); 
-			}
-		}
-		if(out != NULL)
-		{
-			if(freopen(out, mode, stdout) == NULL)
-			{  
-				fprintf(stderr, "Error opening input stream\n"); 
-			}
-		}
-		
-		if (execvp(command[0], command) == -1)
-		{
-			fprintf(stderr, "-%s: %s: %s\n", getprogname(),
-				command[0], strerror(errno)
-			);
+			perror("Couldn't Pipe");
 			exit(EXIT_FAILURE);
 		}
 	}
-	else
+
+	for(i=0;i<commands;++i)
 	{
-		fprintf(stderr, "Error forking a child process\n");
+		 place = start[i];
+		 if((pid = fork())==0)
+		 {
+			 /* if not last command */
+			if(i < pipes)
+			{
+				if(dup2(pipefds[j+1],1) < 0)
+				{
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
+			if(j!=0)
+			{
+				if(dup2(pipefds[j-2], 0) < 0)
+				{
+					perror("dup2");
+				    exit(EXIT_FAILURE);
+				}
+			}
+			for(q = 0; q < 2*pipes; q++)
+			{
+				close(pipefds[q]);
+			}
+			if(execvp(args[place],args+place)<0)
+			{
+				perror(*args);
+			    exit(EXIT_FAILURE);
+			}
+		}
+		else if(pid < 0)
+		{
+			perror("error");
+			exit(EXIT_FAILURE);
+		}
+		j+=2;
 	}
 
-
+	for(i=0;i<2*pipes;i++)
+	{
+		close(pipefds[i]);
+	}
+	for(i=0;i<pipes+1;i++)
+	{
+         wait(&status);
+	}
 }

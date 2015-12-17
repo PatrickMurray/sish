@@ -35,6 +35,6 @@ char** parse(char*);
 void cd(char**);
 void echo(char**);
 
-void command(char**, char*, char*, char, char*);
+void command(char**,int,int[], char*, char*, char, char*);
 
 #endif

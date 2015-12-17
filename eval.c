@@ -1,104 +1,106 @@
 #include "sish.h" 
-void eval(char** args,int pipes)
+void eval(char** args, int pipes)
 {
 	int i=0;
-	int j=0;
-	int k=0;
-	int q=0;
-	int pid;
-	int status;
-	int place;
-	int s=1;
-/*
-	char* inputfile=NULL;
-	char* outputfile=NULL;
-	char  background=0;
-	char* mode="w";
-*/
-	int commands=pipes+1;
-	int pipefds[2*pipes];
-	int commandStarts[10];
-	commandStarts[0] = 0;
+	int pos=1;
+	char*  new_args[MAXCOMMANDS];
+	char** tmp;
+	char*  currentcom;
+	char*  inputfile;
+	char*  outputfile;
+	char   background;
+	char*  mode;
+	char*  buffer[BUFFER_SIZE];
+	int	command_start[10];
 
-	if(*args == NULL)
+	
+	tmp          = new_args;
+	inputfile    = NULL;
+	outputfile   = NULL;
+	background   = 0;
+	mode         = "w";
+	num_commands = pipes+1;
+	command_start[0]=0;
+
+	if (*args == NULL)
 	{
 		return;
 	}
-	for(i=0;i<pipes;i++)
+	while (args[i] != NULL)
 	{
-		if(pipe(pipefds+i*2) < 0)
+				
+		if(strcmp(args[i], "$$") == 0)
 		{
-			perror("Couldn't Pipe");
-			exit(EXIT_FAILURE);
+			/* Replace the process id */
+			bzero(buffer, BUFFER_SIZE);
+			sprintf(*args, "%i", process_id);
 		}
-	}
-	/* INTERNALS */
-	while(args[k] != NULL)
-	{
-		if(!strcmp(args[k], "|"))
+		else if (strcmp(args[i], "$?") == 0)
 		{
-			args[k] = NULL;
-			commandStarts[s] = k+1;
-			s++;
+			/* Replace the exit status */
+			bzero(buffer, BUFFER_SIZE);
+			sprintf(*args, "%i", exit_status);
 		}
-		k++;
-	}
-
-	/** INTERNAL */
-
-
-	/** PIPES **/
-	for(i=0;i<commands;++i)
-	{
-		 place = commandStarts[i];
-		 if((pid = fork())==0)
-		 {
-			 /* if not last command */
-			if(i < pipes)
-			{
-				if(dup2(pipefds[j+1],1) < 0)
-				{
-					perror("dup2");
-					exit(EXIT_FAILURE);
-				}
-			}
-			if(j!=0)
-			{
-				if(dup2(pipefds[j-2], 0) < 0)
-				{
-					perror("dup2");
-				    exit(EXIT_FAILURE);
-				}
-			}
-			for(q = 0; q < 2*pipes; q++)
-			{
-				close(pipefds[q]);
-			}
-			if(execvp(args[place],args+place)<0)
-			{
-				perror(*args);
-			    exit(EXIT_FAILURE);
-			}
-		}
-		else if(pid < 0)
+		if(strcmp(args[i], "<") == 0)
 		{
-			perror("error");
-			exit(EXIT_FAILURE);
+			args[i]=NULL;
+			if(args[i+1])
+			{
+				inputfile =args[i+1];
+			}
+			else
+			{
+				fprintf(stderr, "Missing name for redirect.\n");
+				return;
+			}
 		}
-		j+=2;
-	}
-	/** REDIRECTIONS **/
+		else if(strcmp(args[i], ">") == 0)
+		{
+			args[i]=NULL;
+			if(args[i+1])
+			{
+				outputfile = args[i+1];
+			}
+			else
+			{
+				fprintf(stderr, "Missing name for redirect.\n");
+				return;
+			}
 
-	for(i=0;i<2*pipes;i++)
-	{
-		close(pipefds[i]);
+		}
+		else if (strcmp(args[i], ">>") == 0)
+		{
+			args[i]=NULL;
+			if(args[i+1])
+			{
+				mode = "a";
+				outputfile = args[i+1];
+			}
+			else
+			{
+				fprintf(stderr, "Missing name for redirect.\n");
+				return;
+			}
+		}
+		else if (strcmp(args[i], "&") == 0)
+		{
+			args[i]=NULL;
+			background = 1;
+		}
+		else if (strcmp(args[i],"|") == 0)
+		{
+			args[i]=NULL;
+			command_start[pos]=i+1;
+			pos++;
+		}
+		else
+		{
+			*tmp = args[i];
+			tmp++;
+		}
+		i++;
 	}
-	for(i=0;i<pipes+1;i++)
-	{
-         wait(&status);
-	}
-
-/*
+	currentcom = new_args[0];
 	if(strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
@@ -111,5 +113,8 @@ void eval(char** args,int pipes)
 	{
 		echo(new_args);
 	}
-*/
+	else
+	{
+		command(args,num_commands,command_start,inputfile,outputfile,background,mode);
+	}
 }

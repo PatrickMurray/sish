@@ -49,7 +49,7 @@ void eval(char** args)
 			sprintf(*args, "%i", exit_status);
 		}
 		
-		if (strcmp(*args, "<") == 0)
+		if(strcmp(*args, "<") == 0)
 		{
 			args++;
 
@@ -113,15 +113,15 @@ void eval(char** args)
 	*tmp = NULL;
 	currentcom = new_args[0];
 	
-	if (strcmp(currentcom,"exit") == 0)
+	if(strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
 	}
-	else if (strcmp(currentcom, "cd") == 0)
+	else if(strcmp(currentcom, "cd") == 0)
 	{
 		cd(new_args);
 	}
-	else if (strcmp(currentcom, "echo") == 0)
+	else if(strcmp(currentcom, "echo") == 0)
 	{
 		echo(new_args);
 	}
