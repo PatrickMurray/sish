@@ -45,6 +45,10 @@ void command(char** args,int commands,int start[], char* in, char* out, char bg,
 		 place = start[i];
 		 if((pid = fork())==0)
 		 {
+			if (bg) {
+				daemon(1, 1);
+			}
+
 			/* if not last command */
 			if(i < pipes)
 			{
