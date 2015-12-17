@@ -25,7 +25,7 @@ void echo(char** argv)
 		/* If there is an argument following the current argument, we
 		 * want to add a space between them.
 		 */
-		if (arguments[i + 1] != NULL) {
+		if (argv[i + 1] != NULL) {
 			printf(" ");
 		}
 

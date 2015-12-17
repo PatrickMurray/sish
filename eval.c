@@ -10,7 +10,6 @@ void eval(char** args, int pipes)
 	char*  outputfile;
 	char   background;
 	char*  mode;
-	char*  buffer[BUFFER_SIZE];
 	int	command_start[10];
 
 	
@@ -32,13 +31,11 @@ void eval(char** args, int pipes)
 		if(strcmp(args[i], "$$") == 0)
 		{
 			/* Replace the process id */
-			bzero(buffer, BUFFER_SIZE);
 			sprintf(*args, "%i", process_id);
 		}
 		else if (strcmp(args[i], "$?") == 0)
 		{
 			/* Replace the exit status */
-			bzero(buffer, BUFFER_SIZE);
 			sprintf(*args, "%i", exit_status);
 		}
 		if(strcmp(args[i], "<") == 0)

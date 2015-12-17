@@ -23,7 +23,6 @@
 
 #define maxargs     15
 #define MAXCOMMANDS 512
-#define BUFFER_SIZE 65536
 
 
 char* _args[maxargs];
