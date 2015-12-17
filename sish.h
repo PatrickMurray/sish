@@ -3,7 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef __NetBSD__
 #include <bsd/stdlib.h>
+#endif
+
 #include <unistd.h>
 #include <signal.h>
 #include <readline/readline.h>
@@ -15,6 +19,7 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
 
 #define maxargs     15
 #define MAXCOMMANDS 512
