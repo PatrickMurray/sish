@@ -1,6 +1,5 @@
 #include "sish.h"
 
-
 int count_commands(char** arglist) {
 	int i;
 	int count;
@@ -66,6 +65,20 @@ void command(char** args,int commands,int start[], char* in, char* out, char bg,
 			for(q = 0; q < 2*pipes; q++)
 			{
 				close(pipefds[q]);
+			}
+			if(in !=NULL)
+			{
+				if(freopen(in, "r", stdin) == NULL)
+				{
+					fprintf(stderr, "Error opening input stream\n");
+				}
+			}
+			if(out !=NULL)
+			{
+				if(freopen(out, mode, stdout) == NULL)
+				{  
+					fprintf(stderr, "Error opening input stream\n"); 
+				}
 			}
 			if(execvp(args[place],args+place)<0)
 			{
