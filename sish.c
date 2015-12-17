@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	char*  shell_prompt;
 	char*  exec_path;
 	char   buffer[PATH_MAX + 1];
-	int num_pipes=1;
+	int num_pipes=0;
 	
 	shell_prompt = "sish_1.0$ ";
 	
