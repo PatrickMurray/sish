@@ -51,7 +51,6 @@ void eval(char** args, int pipes)
 			}
 		}
 		
-
 		if(strcmp(args[idx], "$$") == 0)
 		{
 			/* Replace the process id */
@@ -110,9 +109,18 @@ void eval(char** args, int pipes)
 		}
 		else if (strcmp(args[idx],"|") == 0)
 		{
-			args[idx]=NULL;
-			command_start[pos]=idx+1;
-			pos++;
+			if(args[idx+1])
+			{
+				args[idx]=NULL;
+				command_start[pos]=idx+1;
+				pos++;
+			}
+			else
+			{
+				fprintf(stderr, "Missing process name for pipe.\n");
+				return;
+
+			}
 		}
 		else
 		{
