@@ -30,7 +30,7 @@ int process_id;
 
 int num_commands;
 
-void eval(char **);
+void eval(char **,int);
 char** parse(char*);
 void cd(char**);
 void echo(char**);

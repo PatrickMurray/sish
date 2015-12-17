@@ -1,132 +1,115 @@
 #include "sish.h" 
-void eval(char** args)
+void eval(char** args,int pipes)
 {
-	int i;
-	char*  new_args[MAXCOMMANDS];
-	char** tmp;
-	char*  currentcom;
-	char*  inputfile;
-	char*  outputfile;
-	char   background;
-	char*  mode;
-	char*  buffer[BUFFER_SIZE];
-	
-	tmp          = new_args;
-	inputfile    = NULL;
-	outputfile   = NULL;
-	background   = 0;
-	mode         = "w";
-	num_commands = 1;
-	i=0;
+	int i=0;
+	int j=0;
+	int k=0;
+	int q=0;
+	int pid;
+	int status;
+	int place;
+	int s=1;
+/*
+	char* inputfile=NULL;
+	char* outputfile=NULL;
+	char  background=0;
+	char* mode="w";
+*/
+	int commands=pipes+1;
+	int pipefds[2*pipes];
+	int commandStarts[10];
+	commandStarts[0] = 0;
 
-	if (*args == NULL)
+	if(*args == NULL)
 	{
 		return;
 	}
-	while(args[i] !=NULL)
+	for(i=0;i<pipes;i++)
 	{
-		if(strcmp(args[i], "|") == 0)
+		if(pipe(pipefds+i*2) < 0)
 		{
-			num_commands++;
+			perror("Couldn't Pipe");
+			exit(EXIT_FAILURE);
 		}
-		i++;
 	}
-	printf("%d\n",num_commands);
-
-	while (*args != NULL)
+	/* INTERNALS */
+	while(args[k] != NULL)
 	{
-				
-		if (strcmp(*args, "$$") == 0)
+		if(!strcmp(args[k], "|"))
 		{
-			/* Replace the process id */
-			bzero(buffer, BUFFER_SIZE);
-			sprintf(*args, "%i", process_id);
+			args[k] = NULL;
+			commandStarts[s] = k+1;
+			s++;
 		}
-		else if (strcmp(*args, "$?") == 0)
-		{
-			/* Replace the exit status */
-			bzero(buffer, BUFFER_SIZE);
-			sprintf(*args, "%i", exit_status);
-		}
-		
-		if (strcmp(*args, "<") == 0)
-		{
-			args++;
-
-			if (*args)
-			{
-				inputfile = *args;
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
-				return;
-			}
-		}
-		else if (strcmp(*args, ">") == 0)
-		{
-			args++;
-
-			if (*args)
-			{
-				outputfile = *args;
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
-				return;
-			}
-
-		}
-		else if (strcmp(*args, ">>") == 0)
-		{
-			args++;
-
-			if (*args)
-			{
-				mode = "a";
-				outputfile = *args;
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
-				return;
-			}
-		}
-		else if (strcmp(*args, "&") == 0)
-		{
-			background = 1;
-		}
-		else if (strcmp(*args,"|") == 0)
-		{
-			printf("%s\n","TODO PIPELINE");
-		}
-		else
-		{
-			*tmp = (*args);
-			tmp++;
-		}
-
-		args++;
+		k++;
 	}
 
-	*tmp = NULL;
-	currentcom = new_args[0];
-	
-	if (strcmp(currentcom,"exit") == 0)
+	/** INTERNAL */
+
+
+	/** PIPES **/
+	for(i=0;i<commands;++i)
+	{
+		 place = commandStarts[i];
+		 if((pid = fork())==0)
+		 {
+			 /* if not last command */
+			if(i < pipes)
+			{
+				if(dup2(pipefds[j+1],1) < 0)
+				{
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
+			if(j!=0)
+			{
+				if(dup2(pipefds[j-2], 0) < 0)
+				{
+					perror("dup2");
+				    exit(EXIT_FAILURE);
+				}
+			}
+			for(q = 0; q < 2*pipes; q++)
+			{
+				close(pipefds[q]);
+			}
+			if(execvp(args[place],args+place)<0)
+			{
+				perror(*args);
+			    exit(EXIT_FAILURE);
+			}
+		}
+		else if(pid < 0)
+		{
+			perror("error");
+			exit(EXIT_FAILURE);
+		}
+		j+=2;
+	}
+	/** REDIRECTIONS **/
+
+	for(i=0;i<2*pipes;i++)
+	{
+		close(pipefds[i]);
+	}
+	for(i=0;i<pipes+1;i++)
+	{
+         wait(&status);
+	}
+
+/*
+	if(strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
 	}
-	else if (strcmp(currentcom, "cd") == 0)
+	else if(strcmp(currentcom, "cd") == 0)
 	{
 		cd(new_args);
 	}
-	else if (strcmp(currentcom, "echo") == 0)
+	else if(strcmp(currentcom, "echo") == 0)
 	{
 		echo(new_args);
 	}
-	else
-	{
-		command(new_args, inputfile, outputfile, background, mode);
-	}
+*/
 }

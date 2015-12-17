@@ -11,7 +11,7 @@ LINKS   := -lm -lbsd  -lreadline
 
 all: $(OBJ)
 	#$(shell lex parser.c)
-	$(CC) $(OBJ) -o $(NAME) $(LINKS) $(CFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LINKS)  $(CFLAGS)
 
 clean:
 	-$(RM) *~
