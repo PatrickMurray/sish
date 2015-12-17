@@ -1,8 +1,8 @@
 #include "sish.h" 
 void eval(char** args, int pipes)
 {
-	int i=0;
-	int pos=1;
+	int    idx;
+	int    pos=1;
 	char*  new_args[MAXCOMMANDS];
 	char** tmp;
 	char*  currentcom;
@@ -10,7 +10,7 @@ void eval(char** args, int pipes)
 	char*  outputfile;
 	char   background;
 	char*  mode;
-	int	command_start[10];
+	int    command_start[10];
 
 	
 	tmp          = new_args;
@@ -25,24 +25,26 @@ void eval(char** args, int pipes)
 	{
 		return;
 	}
-	while (args[i] != NULL)
+
+	idx = 0;
+	while (args[idx] != NULL)
 	{
-		if(strcmp(args[i], "$$") == 0)
+		if(strcmp(args[idx], "$$") == 0)
 		{
 			/* Replace the process id */
-			sprintf(args[i], "%i", process_id);
+			sprintf(args[idx], "%i", process_id);
 		}
-		else if (strcmp(args[i], "$?") == 0)
+		else if (strcmp(args[idx], "$?") == 0)
 		{
 			/* Replace the exit status */
-			sprintf(args[i], "%i", exit_status);
+			sprintf(args[idx], "%i", exit_status);
 		}
-		if(strcmp(args[i], "<") == 0)
+		if(strcmp(args[idx], "<") == 0)
 		{
-			args[i]=NULL;
-			if(args[i+1])
+			args[idx]=NULL;
+			if(args[idx+1])
 			{
-				inputfile =args[i+1];
+				inputfile =args[idx+1];
 			}
 			else
 			{
@@ -50,12 +52,12 @@ void eval(char** args, int pipes)
 				return;
 			}
 		}
-		else if(strcmp(args[i], ">") == 0)
+		else if(strcmp(args[idx], ">") == 0)
 		{
-			args[i]=NULL;
-			if(args[i+1])
+			args[idx]=NULL;
+			if(args[idx+1])
 			{
-				outputfile = args[i+1];
+				outputfile = args[idx+1];
 			}
 			else
 			{
@@ -64,13 +66,13 @@ void eval(char** args, int pipes)
 			}
 
 		}
-		else if (strcmp(args[i], ">>") == 0)
+		else if (strcmp(args[idx], ">>") == 0)
 		{
-			args[i]=NULL;
-			if(args[i+1])
+			args[idx]=NULL;
+			if(args[idx+1])
 			{
 				mode = "a";
-				outputfile = args[i+1];
+				outputfile = args[idx+1];
 			}
 			else
 			{
@@ -78,26 +80,29 @@ void eval(char** args, int pipes)
 				return;
 			}
 		}
-		else if (strcmp(args[i], "&") == 0)
+		else if (strcmp(args[idx], "&") == 0)
 		{
-			args[i]=NULL;
+			args[idx]=NULL;
 			background = 1;
 		}
-		else if (strcmp(args[i],"|") == 0)
+		else if (strcmp(args[idx],"|") == 0)
 		{
-			args[i]=NULL;
-			command_start[pos]=i+1;
+			args[idx]=NULL;
+			command_start[pos]=idx+1;
 			pos++;
 		}
 		else
 		{
-			*tmp = args[i];
+			*tmp = args[idx];
 			tmp++;
 		}
-		++i;
+
+		idx++;
 	}
+
 	*tmp=NULL;
 	currentcom = new_args[0];
+	
 	if(strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
@@ -114,5 +119,9 @@ void eval(char** args, int pipes)
 	{
 		command(args,num_commands,command_start,inputfile,outputfile,background,mode);
 	}
-
+	
+	while (idx >= 0) {
+		args[idx] = NULL;
+		idx--;
+	}
 }

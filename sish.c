@@ -18,14 +18,13 @@ void sigintHandler(int sig_num)
 
 int main(int argc, char** argv) 
 {
-	int i;
 	char   flag;	
 	char*  input;
 	char** arglist;
 	char*  shell_prompt;
 	char*  exec_path;
 	char   buffer[PATH_MAX + 1];
-	int num_pipes=0;
+	int    num_pipes;
 	
 	shell_prompt = "sish_1.0$ ";
 	
@@ -102,27 +101,19 @@ int main(int argc, char** argv)
 			arglist=(char**)parse(input);
 			if(arglist != NULL)
 			{
-				while(arglist[i] !=NULL)
-				{
-					if(strcmp(arglist[i], "|") == 0)
-					{
-						num_pipes++;
-					}
-					i++;
-				}
-				eval(arglist,num_pipes);
+				num_pipes = count_commands(arglist);
+				eval(arglist, num_pipes);
 			}
 		} 
 	}
 	else 
 	{
-		/*
 		arglist = parse(arguments_command);
 		if (arglist != NULL)
 		{
-			eval(arglist);
+			num_pipes = count_commands(arglist);
+			eval(arglist, num_pipes);
 		}
-		*/
 	}
 
 	return EXIT_SUCCESS;

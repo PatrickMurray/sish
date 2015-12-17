@@ -39,6 +39,7 @@ char** parse(char*);
 void cd(char**);
 void echo(char**);
 
+int count_commands(char** arglist);
 void command(char**,int,int[], char*, char*, char, char*);
 
 #endif
