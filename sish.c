@@ -93,6 +93,10 @@ int main(int argc, char** argv)
 			{
 				continue;
 			}
+
+			/* Why not add history :) */
+			add_history(input);
+			
 			arglist=(char**)parse(input);
 			if(arglist != NULL)
 			{
