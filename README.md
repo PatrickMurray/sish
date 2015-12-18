@@ -27,3 +27,59 @@ sish [-x] [-c command]
 
 ### testing
 
+
+#### basic
+
+```bash
+$ ./sish 
+sish$ echo $$
+15101
+sish$ ls
+cd.c  command.c  echo.c  eval.c  Makefile  parser.c  README.md	sish  sish.c  sish.h
+sish$ ls | wc -l
+10
+sish$ something
+something: No such file or directory
+sish$ echo $?
+256
+sish$ rm /etc/passwd
+rm: remove write-protected regular file `/etc/passwd'? yes
+rm: cannot remove `/etc/passwd': Permission denied
+sish$ echo $?
+256
+sish$ exit
+```
+
+```bash
+$ ./sish -c date
+Thu Dec 17 22:30:21 EST 2015
+```
+
+```bash
+$ ./sish -x
+sish$ ls
++ ls
+cd.c  command.c  echo.c  eval.c  Makefile  parser.c  README.md	sish  sish.c  sish.h
+sish$ ls | wc -l
++ ls
++ wc -l
+10
+sish$ cd /tmp
++ cd /tmp
+sish$ pwd
++ pwd
+/tmp
+sish$ cd
++ cd
+sish$ pwd
++ pwd
+/home/pmurray1
+sish$ exit
++ exit
+```
+
+
+
+#### miscellaneous
+
+
