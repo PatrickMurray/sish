@@ -128,17 +128,6 @@ void command(char** args, int commands, int start[], char* in,
 				exit(EXIT_FAILURE);
 			}
 		}
-		else if (pid > 0)
-		{
-			/* Parent */
-			/*if (wait(&exit_status) == -1)
-			{
-				fprintf(stderr, "-%s: wait(2) failed\n",
-					getprogname()
-				);
-				return;
-			}*/
-		}
 		else if (pid == -1)
 		{
 			fprintf(stderr, "-%s: unable to fork process: %s\n",
@@ -159,6 +148,6 @@ void command(char** args, int commands, int start[], char* in,
 	/*  */
 	for (i = 0; i < pipes + 1; i++)
 	{
-		wait(&status);
+		wait(&exit_status);
 	}
 }
