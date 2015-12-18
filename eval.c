@@ -1,8 +1,19 @@
-#include "sish.h" 
+#include "sish.h"
+
+
+/*	
+ *	Evaluates the provided array of commands.
+ *	
+ *	@param		char**		an array of commands
+ *	@param		int		the number of pipes contained
+ *	
+ *	@return		void
+ *	
+ */
 void eval(char** args, int pipes)
 {
 	int    idx;
-	int    pos=1;
+	int    pos;
 	char*  new_args[MAXCOMMANDS];
 	char** tmp;
 	char*  currentcom;
@@ -11,29 +22,35 @@ void eval(char** args, int pipes)
 	char   background;
 	char*  mode;
 	int    command_start[10];
-
 	
-	tmp          = new_args;
-	inputfile    = NULL;
-	outputfile   = NULL;
-	background   = 0;
-	mode         = "w";
-	num_commands = pipes+1;
-	command_start[0]=0;
-
+	tmp              = new_args;
+	inputfile        = NULL;
+	outputfile       = NULL;
+	background       = 0;
+	mode             = "w";
+	num_commands     = pipes + 1;
+	command_start[0] = 0;
+	
 	if (*args == NULL)
 	{
 		return;
 	}
 	
+	/* If tracing is enabled, we must prepend "+ " before commands. */
 	if (tracing_enabled)
 	{
 		fprintf(stderr, "+ ");
 	}
-
-	idx = 0;
-	while (args[idx] != NULL)
+	
+	/* Iterate through the list of command tokens and evaulate the
+	 * command's logic.
+	 */
+	for (idx = 0, pos = 1; args[idx] != NULL; idx++)
 	{
+		/* Once again, if tracing is enabled, we must print each
+		 * command appended by "+ ". If a pipe is encountered, we also
+		 * append a new line as well as "+ "
+		 */
 		if (tracing_enabled)
 		{
 			if (strcmp(args[idx], "|") == 0)
@@ -43,6 +60,11 @@ void eval(char** args, int pipes)
 			else
 			{
 				fprintf(stderr, "%s", args[idx]);
+				
+				/* If the next element in the command token is
+				 * neither NULL nor equal to "|" then we also
+				 * append a space.
+				 */
 				if (args[idx + 1] != NULL &&
 				    strcmp(args[idx + 1], "|"))
 				{
@@ -51,94 +73,142 @@ void eval(char** args, int pipes)
 			}
 		}
 		
+		/* Before anything even gets executed, we replace the special
+		 * variables $$ and $? with their respective values. */
 		if(strcmp(args[idx], "$$") == 0)
 		{
-			/* Replace the process id */
+			/* Replace $$ with the last process' process id */
 			sprintf(args[idx], "%i", process_id);
 		}
 		else if (strcmp(args[idx], "$?") == 0)
 		{
-			/* Replace the exit status */
+			/* Replace $? with the last process' exit status */
 			sprintf(args[idx], "%i", exit_status);
 		}
+		
+		/* If the current token is the input redirection operatior,
+		 * then we load the following token and set it as the input
+		 * source.
+		 */
 		if(strcmp(args[idx], "<") == 0)
 		{
-			args[idx]=NULL;
-			if(args[idx+1])
+			/* Erase the operator token from the token stream */
+			args[idx] = NULL;
+			
+			/* If the user does not provide an input source, notify
+			 * them of the error.
+			 */
+			if (args[idx+1] == NULL)
 			{
-				inputfile =args[idx+1];
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
+				fprintf(stderr, "-%s: '<' missing input source\n",
+					getprogname()
+				);
 				return;
 			}
+			
+			inputfile = args[idx + 1];
 		}
 		else if(strcmp(args[idx], ">") == 0)
 		{
-			args[idx]=NULL;
-			if(args[idx+1])
+			/* Similar to the input redirection operator, for the
+			 * output redirection operator we check if an output
+			 * source is specified and set that as the outpuf file.
+			 */
+			
+			/* Erase current the operator token */
+			args[idx] = NULL;
+			
+			/* Check if an output file is provided */
+			if (args[idx + 1] == NULL)
 			{
-				outputfile = args[idx+1];
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
+				fprintf(stderr,
+					"-%s: '>' missing output source\n",
+					getprogname()
+				);
 				return;
 			}
 
+			outputfile = args[idx + 1];
 		}
 		else if (strcmp(args[idx], ">>") == 0)
 		{
-			args[idx]=NULL;
-			if(args[idx+1])
+			/* Once again, we must verify the output token for the
+			 * append redirection operator.
+			 */
+			
+			args[idx] = NULL;
+			
+			if (args[idx + 1] == NULL)
 			{
-				mode = "a";
-				outputfile = args[idx+1];
-			}
-			else
-			{
-				fprintf(stderr, "Missing name for redirect.\n");
+				fprintf(stderr,
+					"-%s: '>>' missing output source\n",
+					getprogname()
+				);
 				return;
 			}
+			
+			/* Set the IO mode to append */
+			mode = "a";
+			outputfile = args[idx + 1];
 		}
 		else if (strcmp(args[idx], "&") == 0)
 		{
-			args[idx]=NULL;
+			/* If the current token is the background process
+			 * operator, we reset it to NULL and mark the
+			 * background variable to be true.
+			 */
+			args[idx]  = NULL;
 			background = 1;
 		}
 		else if (strcmp(args[idx],"|") == 0)
 		{
-			if(args[idx+1])
+			/* If the current token is the pipe operator, we must
+			 * verify that the next operator is not NULL and is not
+			 * another pipe operator.
+			 */
+			if (args[idx + 1] == NULL ||
+			    strcmp(args[idx + 1], "|") == 0)
 			{
-				args[idx]=NULL;
-				command_start[pos]=idx+1;
-				pos++;
-			}
-			else
-			{
-				fprintf(stderr, "Missing process name for pipe.\n");
+				fprintf(stderr,
+					"-%s: '|' missing target command\n",
+					getprogname()
+				);
 				return;
 
 			}
+			
+			/* Reset the token as usual, and mark the beginning of
+			 * the next command in the pipe sequence.
+			 */
+			args[idx]          = NULL;
+			command_start[pos] = idx + 1;
+			pos++;
 		}
 		else
 		{
+			/* For every other token, we simply copy it to
+			 * temporary storage.
+			 */
 			*tmp = args[idx];
 			tmp++;
 		}
-
-		idx++;
 	}
 	
+	/* If tracing has been enabled, we must add a newline after the end of
+	 * the command.
+	 */
 	if (tracing_enabled)
 	{
 		fprintf(stderr, "\n");
 	}
+	
+	/* Clear the temporary storage */
+	*tmp = NULL;
 
-	*tmp=NULL;
+	/* Fetch the current command from new_args = tmp */
 	currentcom = new_args[0];
 	
+	/* Check the current command for built-in functions*/
 	if(strcmp(currentcom,"exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
@@ -153,11 +223,40 @@ void eval(char** args, int pipes)
 	}
 	else
 	{
+		/* If it's not a built-in command, otherwise call the general
+		 * purpose command function.
+		 */
 		command(args,num_commands,command_start,inputfile,outputfile,background,mode);
 	}
 	
+	/* Now we must reset the arguments used by the commands. */
 	while (idx >= 0) {
 		args[idx] = NULL;
 		idx--;
 	}
+}
+
+
+/*	
+ *	Counts the number of pipes contained in the provided list of aruments.
+ *	
+ *	@param		char**		arguments list
+ *	
+ *	@return		int
+ *	
+ */
+int count_pipes(char** arglist)
+{
+	int i;
+	int count;
+	
+	for (i = 0, count = 0; arglist[i] != NULL; i++)
+	{
+		if (strcmp(arglist[i], "|") == 0)
+		{
+			count++;
+		}
+	}
+	
+	return count;
 }

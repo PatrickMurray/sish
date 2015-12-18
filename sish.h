@@ -24,22 +24,49 @@
 #define maxargs     15
 #define MAXCOMMANDS 512
 
+
+/* sish.c */
+char* shell_prompt;
+int   tracing_enabled;
+char* arguments_command;
+int   process_id;
+int   exit_status;
+
+int  main(int, char**);
+void set_shell(char*);
+void parse_arguments(int, char**);
+void sigint_handler(int);
+
+
+
 char* _args[maxargs];
 
-int tracing_enabled;
-char* arguments_command;
 
-int exit_status;
-int process_id;
+/* parser.c */
+
+
+/* eval.c */
+void eval(char **,int);
+int count_pipes(char** arglist);
+
+
+/* cd.c */
+void cd(char**);
+
+
+/* echo.c */
+void echo(char**);
+
+
+/* command.c */
+void command(char**,int,int[], char*, char*, char, char*);
+
+
+
 
 int num_commands;
 
-void eval(char **,int);
 char** parse(char*);
-void cd(char**);
-void echo(char**);
 
-int count_commands(char** arglist);
-void command(char**,int,int[], char*, char*, char, char*);
 
 #endif
