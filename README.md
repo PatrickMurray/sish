@@ -8,16 +8,22 @@ sish [-x] [-c command]
 ### collaboration
 
 #### Neal Trischitta
-- a
-- b
-- c
-- d
+- Implementation Research
+- Token Evaluation
+- Input / Output Redirection
+- Pipelines
+- Command Execution
+- Testing & Debugging
 
 #### Patrick Murray
-- a
-- b
-- c
-- d
+- Argument Parsing
+- SHELL Environment Variable
+- Command Parsing and Tokenization
+- Built-in Functions
+- Variable Support (i.e. $$, $?)
+- Background Commands
+- Testing & Debugging
+- NetBSD Portability
 
 ### testing
 
