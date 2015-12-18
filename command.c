@@ -32,23 +32,30 @@ void command(char** args, int commands, int start[], char* in,
 	
 	exit_status = 0;
 	
+	/*  */
 	for (i = 0; i < pipes; i++)
 	{
-		if (pipe(pipefds + i * 2) < 0)
+		if (pipe(pipefds + i * 2) == -1)
 		{
-			perror("Couldn't Pipe");
-			exit(EXIT_FAILURE);
+			fprintf(stderr, "-%s: unable to create pipe: %s\n",
+				getprogname(), strerror(errno)
+			);
+			return;
 		}
 	}
 	
+	/*  */
 	for (i = 0; i < commands; i++)
 	{
 		place = start[i];
 		
 		if ((pid = fork()) == 0)
 		{
-			/* Child */
-
+			/* Child Process */
+			
+			/* If background process is set to true, then mark the
+			 * child process as a daemon.
+			 */
 			if (bg)
 			{
 				daemon(1, 1);
@@ -57,27 +64,36 @@ void command(char** args, int commands, int start[], char* in,
 			/* if not last command */
 			if (i < pipes)
 			{
-				if (dup2(pipefds[j + 1], 1) < 0)
+				if (dup2(pipefds[j + 1], 1) == -1)
 				{
-					perror("dup2");
+					fprintf(stderr,
+						"-%s: dup2(2) failed: %s\n",
+						getprogname(), strerror(errno)
+					);
 					exit(EXIT_FAILURE);
 				}
 			}
-
+			
+			/*  */
 			if (j != 0)
 			{
-				if (dup2(pipefds[j - 2], 0) < 0)
+				if (dup2(pipefds[j - 2], 0) == -1)
 				{
-					perror("dup2");
+					fprintf(stderr,
+						"-%s: dup2(2) failed: %s\n",
+						getprogname(), strerror(errno)
+					);
 					exit(EXIT_FAILURE);
 				}
 			}
-
+			
+			/*  */
 			for (q = 0; q < 2 * pipes; q++)
 			{
 				close(pipefds[q]);
 			}
-
+			
+			/*  */
 			if (in != NULL)
 			{
 				if (freopen(in, "r", stdin) == NULL)
@@ -90,7 +106,8 @@ void command(char** args, int commands, int start[], char* in,
 					/* exit here? */
 				}
 			}
-
+			
+			/*  */
 			if (out != NULL)
 			{
 				if (freopen(out, mode, stdout) == NULL)
@@ -103,7 +120,8 @@ void command(char** args, int commands, int start[], char* in,
 					/* exit here? */
 				}
 			}
-
+			
+			/*  */
 			if (execvp(args[place], args + place) < 0)
 			{
 				perror(*args);
@@ -123,18 +141,22 @@ void command(char** args, int commands, int start[], char* in,
 		}
 		else if (pid == -1)
 		{
-			perror("error");
-			exit(EXIT_FAILURE);
+			fprintf(stderr, "-%s: unable to fork process: %s\n",
+				getprogname(), strerror(errno)
+			);
+			return;
 		}
 
 		j += 2;
 	}
 	
+	/*  */
 	for (i = 0; i < 2 * pipes; i++)
 	{
 		close(pipefds[i]);
 	}
-
+	
+	/*  */
 	for (i = 0; i < pipes + 1; i++)
 	{
 		wait(&status);

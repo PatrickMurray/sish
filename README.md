@@ -7,4 +7,17 @@ sish [-x] [-c command]
 
 ### collaboration
 
+#### Neal Trischitta
+- 
+- 
+- 
+- 
+
+#### Patrick Murray
+- 
+- 
+- 
+- 
+
 ### testing
+
