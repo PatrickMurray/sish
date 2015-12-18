@@ -1,82 +1,40 @@
-/*
- * LEX SPECIFICATION
- *
- */
-
-%option noyywrap
-%option noinput
-%option nounput
-
-%{
-
-#undef _POSIX_SOURCE
-#define _POSIX_SOURCE
-#define YY_PROTO(proto) proto
-#define YY_DECL char **yylex YY_PROTO(( void ))
-
-#undef YY_INPUT
-#define YY_INPUT(b,r,s) readInputForLexer(b,&r,s)
-
 #include "sish.h"
 
-int comcount=0;
-char* inputtext;
-extern int readInputForLexer(char* buffer,int *numBytesRead,int maxBytesToRead);
-%}
 
-WORDS	[a-zA-Z0-9\/\.\-\=\^$\\?]+
-OPS		[><|&]|>>
-
-%%
-	comcount=0;
-	_args[0]=NULL;
-
-{WORDS}|{OPS} {
-		if(comcount < maxargs-1)
-		{
-			 _args[comcount++] = (char *)strdup(yytext);
-			 _args[comcount] = NULL;
-		}
-	}
-
-\n return _args;
-
-
-[ \t]+
-
-. return NULL;
-
-%%
-
-char** parse(char* line)
-{	
-	if((inputtext=malloc(strlen(line)+strlen("\n")+1)) != NULL)
+/*	
+ *	Parses the provided command string and tokenizes it by delimiting
+ *	spaces, tabs, and newlines.
+ *	
+ *	@param		char*		a command
+ *	
+ *	@return		char**		command token sequence
+ *	
+ */
+char** parse(char* command)
+{
+	char** tokens;
+	char*  delimiters;
+	int    idx;
+	char*  token;
+	
+	if ((tokens = calloc(MAXCOMMANDS, sizeof(char*))) == NULL)
 	{
-		inputtext[0]='\0';
-		strcat(inputtext,line);
-		strcat(inputtext,"\n");
-	} 
-	else 
-	{
-		fprintf(stderr,"malloc failed!\n");
+		fprintf(stderr, "-%s: unable to allocate memory\n",
+			getprogname()
+		);
 		exit(EXIT_FAILURE);
 	}
-	return (char **)yylex();
-}
-
-int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead ) {
-    int numBytesToRead = maxBytesToRead;
-    int bytesRemaining = strlen(inputtext);
-    int i;
-
-    if(numBytesToRead > bytesRemaining )
-	{ 
-		numBytesToRead = bytesRemaining; 
-	}
-    for(i = 0;i<numBytesToRead;i++)
+	
+	delimiters = " \t\n";
+	idx = 0;
+	token = strtok(command, delimiters);
+	
+	while (token != NULL)
 	{
-        buffer[i] = inputtext[i];
-    }
-    *numBytesRead=numBytesToRead;
-    return 0;
+		tokens[idx] = token;
+		idx++;
+		token = strtok(NULL, delimiters);
+	}
+	
+	return tokens;
 }

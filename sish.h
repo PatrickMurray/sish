@@ -20,9 +20,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
-#define maxargs     15
+#ifndef MAXCOMMANDS
 #define MAXCOMMANDS 512
+#endif
 
 
 /* sish.c */
@@ -37,36 +37,20 @@ void set_shell(char*);
 void parse_arguments(int, char**);
 void sigint_handler(int);
 
-
-
-char* _args[maxargs];
-
-
 /* parser.c */
-
+char** parse(char*);
 
 /* eval.c */
 void eval(char **,int);
-int count_pipes(char** arglist);
-
+int  count_pipes(char** arglist);
 
 /* cd.c */
 void cd(char**);
 
-
 /* echo.c */
 void echo(char**);
 
-
 /* command.c */
 void command(char**,int,int[], char*, char*, char, char*);
-
-
-
-
-int num_commands;
-
-char** parse(char*);
-
 
 #endif

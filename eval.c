@@ -14,22 +14,23 @@ void eval(char** args, int pipes)
 {
 	int    idx;
 	int    pos;
-	char*  new_args[MAXCOMMANDS];
-	char** tmp;
-	char*  currentcom;
 	char*  inputfile;
 	char*  outputfile;
-	char   background;
 	char*  mode;
-	int    command_start[10];
+	char   background;
+	int    command_start[MAXCOMMANDS];
+	char** tmp;
+	char*  curr_command;
+	char*  new_args[MAXCOMMANDS];
+	int    num_commands;
 	
-	tmp              = new_args;
 	inputfile        = NULL;
 	outputfile       = NULL;
-	background       = 0;
 	mode             = "w";
-	num_commands     = pipes + 1;
+	background       = 0;
 	command_start[0] = 0;
+	tmp              = new_args;
+	num_commands     = pipes + 1;
 	
 	if (*args == NULL)
 	{
@@ -206,18 +207,18 @@ void eval(char** args, int pipes)
 	*tmp = NULL;
 
 	/* Fetch the current command from new_args = tmp */
-	currentcom = new_args[0];
+	curr_command = new_args[0];
 	
 	/* Check the current command for built-in functions*/
-	if(strcmp(currentcom,"exit") == 0)
+	if (strcmp(curr_command, "exit") == 0)
 	{
 		exit(EXIT_SUCCESS);
 	}
-	else if(strcmp(currentcom, "cd") == 0)
+	else if (strcmp(curr_command, "cd") == 0)
 	{
 		cd(new_args);
 	}
-	else if(strcmp(currentcom, "echo") == 0)
+	else if (strcmp(curr_command, "echo") == 0)
 	{
 		echo(new_args);
 	}

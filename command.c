@@ -43,9 +43,12 @@ void command(char** args, int commands, int start[], char* in,
 	
 	for (i = 0; i < commands; i++)
 	{
-		 place = start[i];
-		 if ((pid = fork()) == 0)
-		 {
+		place = start[i];
+		
+		if ((pid = fork()) == 0)
+		{
+			/* Child */
+
 			if (bg)
 			{
 				daemon(1, 1);
@@ -107,7 +110,18 @@ void command(char** args, int commands, int start[], char* in,
 				exit(EXIT_FAILURE);
 			}
 		}
-		else if (pid < 0)
+		else if (pid > 0)
+		{
+			/* Parent */
+			/*if (wait(&exit_status) == -1)
+			{
+				fprintf(stderr, "-%s: wait(2) failed\n",
+					getprogname()
+				);
+				return;
+			}*/
+		}
+		else if (pid == -1)
 		{
 			perror("error");
 			exit(EXIT_FAILURE);

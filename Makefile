@@ -1,14 +1,14 @@
 NAME    := sish
-TARBALL := $(NAME).tar
+TARBALL := pmurray1-ntrischi-$(NAME).tar.gz
 
-SRC     := sish.c lex.yy.c eval.c cd.c echo.c command.c
+SRC     := sish.c parser.c eval.c cd.c echo.c command.c
 HEADERS := sish.h
 FILES   := Makefile README.md $(SRC) $(HEADERS)
 
 CFLAGS        := -Wall -Werror -g
 OBJ           := $(SRC:.c=.o)
 LINUX_LINKS   := -lm -lbsd  -lreadline
-NETBSD_LINKS  := -lm -lreadline
+NETBSD_LINKS  := -lm -ledit
 
 all: $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(LINUX_LINKS) $(CFLAGS)
@@ -21,7 +21,6 @@ clean:
 	-$(RM) \#*
 	-$(RM) *.o
 	-$(RM) *.core
-	-$(RM) lex.yy.c
 
 fclean:	clean
 	-$(RM) $(NAME)

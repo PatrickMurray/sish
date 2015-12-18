@@ -41,6 +41,8 @@ int main(int argc, char** argv)
 			num_pipes = count_pipes(arglist);
 			eval(arglist, num_pipes);
 		}
+
+		free(arglist);
 	}
 	else
 	{
@@ -76,6 +78,8 @@ int main(int argc, char** argv)
 				num_pipes = count_pipes(arglist);
 				eval(arglist, num_pipes);
 			}
+
+			free(arglist);
 		}
 	}
 	
