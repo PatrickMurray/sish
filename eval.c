@@ -22,7 +22,6 @@ void eval(char** args, int pipes)
 	char** tmp;
 	char*  curr_command;
 	char*  new_args[MAXCOMMANDS];
-	int    num_commands;
 	
 	inputfile        = NULL;
 	outputfile       = NULL;
@@ -30,7 +29,6 @@ void eval(char** args, int pipes)
 	background       = 0;
 	command_start[0] = 0;
 	tmp              = new_args;
-	num_commands     = pipes + 1;
 	
 	if (*args == NULL)
 	{
@@ -227,7 +225,7 @@ void eval(char** args, int pipes)
 		/* If it's not a built-in command, otherwise call the general
 		 * purpose command function.
 		 */
-		command(args, num_commands, command_start, inputfile,
+		command(args, pipes, command_start, inputfile,
 			outputfile, background, mode
 		);
 	}
