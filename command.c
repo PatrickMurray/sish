@@ -21,7 +21,6 @@ void command(char** args, int commands, int start[], char* in,
 {
 	int i = 0;
 	int pid;
-	int status;
 	int place;
 	int j = 0;
 	int q = 0;
