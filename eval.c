@@ -226,7 +226,9 @@ void eval(char** args, int pipes)
 		/* If it's not a built-in command, otherwise call the general
 		 * purpose command function.
 		 */
-		command(args,num_commands,command_start,inputfile,outputfile,background,mode);
+		command(args, num_commands, command_start, inputfile,
+			outputfile, background, mode
+		);
 	}
 	
 	/* Now we must reset the arguments used by the commands. */
